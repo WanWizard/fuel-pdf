@@ -1,43 +1,68 @@
 <?php
 /**
- * TJS Framework
+ * PDF FuelPHP package - Driver based PDF generation
  *
- * TJS Framework standard classes for building web applications.
+ * This package is based on https://github.com/TJS-Technology/fuel-pdf
  *
- * @package		TJS
- * @author		TJS Technology
- * @copyright	Copyright (c) 2011 TJS Technology Pty Ltd
- * @license		See LICENSE
- * @link		http://www.tjstechnology.com.au
+ * @package    Fuel
+ * @version    1.0
+ * @author     Harro "WanWizard" Verton
+ * @license    MIT License
+ * @copyright  2012 - Exite Development Services
+ * @link       http://exite.eu
  */
+
+
 return array(
-	'default_driver'	=> 'dompdf',
+	/**
+	 * Default driver to load if none is specified
+	 */
+	'driver'	=> 'dompdf',
+
+	/**
+	 * Available PDF engines. Include paths are relative to the vendor folder
+	 */
 	'drivers'			=> array(
+
+		/**
+		 */
 		'tcpdf'		=> array(
 			'includes'	=> array(
-				// Relative to lib path
 				'tcpdf/config/lang/eng.php',
 				'tcpdf/tcpdf.php',
 			),
-			'class'		=> 'TCPDF',
+			'defaults' => array(
+				'P',
+				'mm',
+				'A4',
+				true,
+				'UTF-8',
+				false
+			),
 		),
+
+		/**
+		 */
 		'dompdf'	=> array(
 			'includes'	=> array(
 				'dompdf/dompdf_config.inc.php',
 			),
-			'class'		=> 'DOMPDF',
 		),
+
+		/**
+		 */
 		'fpdf'	=> array(
 			'includes'	=> array(
 				'fpdf/fpdf.php',
 			),
-			'class'		=> 'FPDF',
 		),
+
+		/**
+		 */
 		'mpdf'	=> array(
 			'includes'	=> array(
 				'mpdf/mpdf.php',
 			),
-			'class'		=> 'mPDF',
 		),
 	),
 );
