@@ -20,7 +20,7 @@ Autoloader::add_classes(array(
 
 	// driver classes
 	'Pdf\\Pdf_Tcpdf'     => __DIR__ . '/classes/pdf/tcpdf.php',
-	'Pdf\\Pdf_Dompdf'    => __DIR__ . '/classes/pdf/dompdf.php',
-	'Pdf\\Pdf_Mpdf'      => __DIR__ . '/classes/pdf/mpdf.php',
-	'Pdf\\Pdf_Fpdf'      => __DIR__ . '/classes/pdf/fpdf.php',
+#	'Pdf\\Pdf_Dompdf'    => __DIR__ . '/classes/pdf/dompdf.php',
+#	'Pdf\\Pdf_Mpdf'      => __DIR__ . '/classes/pdf/mpdf.php',
+#	'Pdf\\Pdf_Fpdf'      => __DIR__ . '/classes/pdf/fpdf.php',
 ));
