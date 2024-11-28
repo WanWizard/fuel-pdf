@@ -17,7 +17,7 @@ return array(
 	/**
 	 * Default driver to load if none is specified
 	 */
-	'driver'	=> 'dompdf',
+	'driver'	=> 'tcpdf',
 
 	/**
 	 * Available PDF engines. Include paths are relative to the vendor folder
@@ -27,10 +27,6 @@ return array(
 		/**
 		 */
 		'tcpdf'		=> array(
-			'includes'	=> array(
-				'tcpdf/config/lang/eng.php',
-				'tcpdf/tcpdf.php',
-			),
 			'defaults' => array(
 				'P',
 				'mm',
@@ -44,25 +40,16 @@ return array(
 		/**
 		 */
 		'dompdf'	=> array(
-			'includes'	=> array(
-				'dompdf/dompdf_config.inc.php',
-			),
 		),
 
 		/**
 		 */
 		'fpdf'	=> array(
-			'includes'	=> array(
-				'fpdf/fpdf.php',
-			),
 		),
 
 		/**
 		 */
 		'mpdf'	=> array(
-			'includes'	=> array(
-				'mpdf/mpdf.php',
-			),
 		),
 	),
 );
