@@ -1,0 +1,19 @@
+{
+	"name": "fuel/pdf",
+	"description" : "FuelPHP 1.x PDF generator Package",
+	"type": "fuel-package",
+	"homepage": "https://github.com/wanwizard/fuel-pdf",
+	"license": "MIT",
+	"authors": [
+		{
+			"name": "Harro \"WanWizard\" Verton",
+			"email": "team@fuelphp.com"
+		}
+	],
+    "suggest": {
+        "tecnickcom/tcpdf" : "TechickCom PDF Generator (TCPDF)",
+    },
+	"require": {
+		"composer/installers": "~1.0"
+	}
+}
