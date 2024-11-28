@@ -19,7 +19,12 @@ class Pdf_Tcpdf extends \TCPDF
 	/**
 	 * @var array	configuration information for this driver
 	 */
-	 protected $config = array();
+	public $assets = array();
+
+	/**
+	 * @var array	configuration information for this driver
+	 */
+	protected $config = array();
 
 	/**
 	 * @var string	path to a background image to be used for the PDF
@@ -47,7 +52,7 @@ class Pdf_Tcpdf extends \TCPDF
 		else
 		{
 			// call the parent constructor
-			call_user_func_array('parent::__construct', $config['defaults']);
+			parent::__construct(...$config['defaults']);
 		}
 	}
 
@@ -96,6 +101,31 @@ class Pdf_Tcpdf extends \TCPDF
 		\Debug::dump($method, $alternatives);
 		\Debug::dump(func_get_args());
 		die('PDF::alternative methods: method called could not be determined!');
+	}
+
+	/**
+	 * capture calls to Output so we can apply a file mask
+	 */
+	public function Output($name='doc.pdf', $dest='I') {
+
+		$result = parent::Output($name, $dest);
+
+		if (in_array($dest, array('F', 'FD', 'FI')))
+		{
+			if (file_exists($name))
+			{
+				try
+				{
+					chmod($name, \Config::get('file.chmod.file', 0664));
+				}
+				catch (\PHPErrorException $e)
+				{
+					logger(\Fuel::L_ERROR, $e->getMessage());
+				}
+			}
+		}
+
+		return $result;
 	}
 
 	/**
@@ -149,7 +179,7 @@ class Pdf_Tcpdf extends \TCPDF
 	public function write_line($text, $extra_lines = 0)
 	{
 		// write the link
-		$this->write(0, $text, '', 0, '', true, 0);
+		$this->write(0, (string) $text, '', 0, '', true, 0);
 
 		// add extra lines if needed
 		$extra_lines > 0 and $this->ln($extra_lines);
@@ -158,23 +188,30 @@ class Pdf_Tcpdf extends \TCPDF
 	/**
 	 * write a cell to the PDF
 	 *
-	 * @param	string		left column text
-	 * @param	string		right column text
-	 * @param	int			indentation in px
+	 * @param $left
+	 * @param $right
+	 * @param int $left_width
+	 * @param bool $colon
+	 * @param int $border
+	 * @param bool $html
+	 * @internal param \Pdf\left $string column text
+	 * @internal param \Pdf\right $string column text
+	 * @internal param \Pdf\indentation $int in px
 	 */
-	public function write_cells($left, $right, $left_width = 40)
+	public function write_cells($left, $right, $left_width = 40, $colon = true, $border = 0, $html = false)
 	{
 		$page_start = $this->getPage();
 		$y_start = $this->GetY();
 
-		$this->MultiCell($left_width, 0, $left, 0, 'L', 0, 2, $this->GetX() ,$y_start, true, 0);
+		$this->MultiCell($left_width, 0, (string) $left, $border, 'L', 0, 2, $this->GetX() ,$y_start, true, 0, $html);
 
 		$page_end_1 = $this->getPage();
 		$y_end_1 = $this->GetY();
 
 		$this->setPage($page_start);
 
-		$this->MultiCell(0, 0, ': '.$right, 0, 'L', 0, 1, $this->GetX() ,$y_start, true, 0);
+		$colon and $right = ': '.$right;
+		$this->MultiCell(0, 0, (string) $right, $border, 'L', 0, 1, $this->GetX() ,$y_start, true, 0, $html);
 
 		$page_end_2 = $this->getPage();
 		$y_end_2 = $this->GetY();
@@ -193,4 +230,40 @@ class Pdf_Tcpdf extends \TCPDF
 		$this->setPage(max($page_end_1,$page_end_2));
 		$this->SetXY($this->GetX(),$ynew);
 	}
+
+	/**
+	 * Generate a QR code
+	 *
+	 * @param	string	URL to encode
+	 * @param	int		element size in pixels
+	 * @param array $fgcolor RGB (0-255) foreground color for bar elements
+	 * @param array $bgcolor RGB (0-255) backrgound color, if null, background is transparent
+	 *
+	 * @return string|Imagick|false image or false in case of error.
+	 */
+	public function qrcode($url, $size=3, $fgcolor = array(0,0,0), $bgcolor = null)
+	{
+		$barcode = new \TCPDF2DBarcode($url, 'QRCODE');
+		$qrcode = $barcode->getBarcodePngData($size, $size, $fgcolor);
+
+		// need to replace the transparent background?
+		if (is_array($bgcolor))
+		{
+			$qrcode = imagecreatefromstring($qrcode);
+			$x = imagesx($qrcode);
+			$y = imagesy($qrcode);
+			$newqrcode = imagecreatetruecolor($x, $y);
+			$color = imagecolorallocate($newqrcode, $bgcolor[0], $bgcolor[1], $bgcolor[2]);
+			imagefill($newqrcode, 0, 0, $color);
+			imagecopy($newqrcode, $qrcode, 0, 0, 0, 0, $x, $y);
+
+			ob_start();
+			imagepng($newqrcode);
+			$qrcode = ob_get_clean();
+			imagedestroy($newqrcode);
+		}
+
+		return $qrcode;
+	}
+
 }
