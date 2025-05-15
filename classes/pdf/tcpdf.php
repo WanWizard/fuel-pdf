@@ -8,7 +8,7 @@
  * @version    1.0
  * @author     Harro "WanWizard" Verton
  * @license    MIT License
- * @copyright  2012 - Exite Development Services
+ * @copyright  2010-2025 FlexCoders Ltd
  * @link       http://exite.eu
  */
 
@@ -120,7 +120,7 @@ class Pdf_Tcpdf extends \TCPDF
 				}
 				catch (\PHPErrorException $e)
 				{
-					logger(\Fuel::L_ERROR, $e->getMessage());
+					logger(\Fuel::L_WARNING, $e->getMessage());
 				}
 			}
 		}
