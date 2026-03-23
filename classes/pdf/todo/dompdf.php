@@ -8,7 +8,7 @@
  * @version    1.0
  * @author     Harro "WanWizard" Verton
  * @license    MIT License
- * @copyright  2010-2025 FlexCoders Ltd
+ * @copyright  2010-2026 FlexCoders Ltd
  * @link       http://exite.eu
  */
 
